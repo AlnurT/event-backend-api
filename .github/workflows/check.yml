@@ -31,7 +31,7 @@ jobs:
 
     - name: Lint with ruff
       run: |
-        ruff check . --exit-zero --max-line-length 88
+        ruff check .
 
     - name: Test with pytest
       run: |
