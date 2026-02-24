@@ -19,10 +19,10 @@ repos:
       args: [ --fix, --show-fixes]
     - id: ruff-format
 
-#- repo: local
-#  hooks:
-#    - id: run-pytest
-#      name: Run pytest
-#      entry: pytest --maxfail=1 --disable-warnings -q
-#      language: system
-#      files: \.py$
+- repo: local
+  hooks:
+    - id: run-pytest
+      name: Run pytest
+      entry: pytest --maxfail=1 --disable-warnings -q
+      language: system
+      files: \.py$

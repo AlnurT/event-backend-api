@@ -1,4 +1,6 @@
 import pytest
+from sqlalchemy import inspect
+from sqlalchemy.ext.asyncio import AsyncEngine
 from src.config import settings
 from src.database import Base, async_session_null_pool, engine_null_pool
 from src.models import *  # noqa: F403
@@ -13,6 +15,14 @@ def check_test_mode():
 async def get_db_null_pool() -> DBManager:
     async with DBManager(session_factory=async_session_null_pool) as db:
         yield db
+
+
+async def get_tables(async_engine: AsyncEngine):
+    async with async_engine.connect() as conn:
+        tables = await conn.run_sync(
+            lambda sync_conn: inspect(sync_conn).get_table_names()
+        )
+        return tables
 
 
 @pytest.fixture(autouse=True)
