@@ -25,4 +25,5 @@ repos:
       name: Run pytest
       entry: pytest --maxfail=1 --disable-warnings -q
       language: system
-      files: \.py$
+      pass_filenames: false
+      always_run: true

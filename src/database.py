@@ -11,6 +11,7 @@ async_session_null_pool = async_sessionmaker(
     bind=engine_null_pool, expire_on_commit=False
 )
 
+str_50 = String(50)
 str_200 = String(200)
 str_500 = String(500)
 
