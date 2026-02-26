@@ -4,6 +4,8 @@ from src.database import Base, str_50, str_500
 
 
 class UsersOrm(Base):
+    """Модель мероприятий в БД"""
+
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -11,5 +13,5 @@ class UsersOrm(Base):
     name: Mapped[str] = mapped_column(str_50)
     age: Mapped[int]
     phone_number: Mapped[str] = mapped_column(String(20))
-    player_level: Mapped[str]
-    description: Mapped[str] = mapped_column(str_500, nullable=True)
+    user_level: Mapped[str]
+    description: Mapped[str | None] = mapped_column(str_500, nullable=True)
