@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from src.utils.enum_utils import UserLevel
+from src.utils.utils import UserLevel
 
 
 class EventSchema(BaseModel):

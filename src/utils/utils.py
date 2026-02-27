@@ -1,4 +1,8 @@
 from enum import Enum
+from typing import TypeVar
+
+from pydantic import BaseModel
+from src.database import Base
 
 
 class UserLevel(str, Enum):
@@ -7,3 +11,7 @@ class UserLevel(str, Enum):
     medium = "средний"
     advanced = "продвинутый"
     pro = "профессионал"
+
+
+DBModelType = TypeVar("DBModelType", bound=Base)
+SchemaType = TypeVar("SchemaType", bound=BaseModel)
