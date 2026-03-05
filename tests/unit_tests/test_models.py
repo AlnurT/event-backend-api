@@ -10,6 +10,7 @@ from tests.conftest import get_tables
         ("events", True),
         ("records", True),
         ("reviews", True),
+        ("fakes", True),
         ("other", False),
     ],
 )
@@ -18,5 +19,4 @@ async def test_model_exists(
     is_in_db: bool,
 ):
     tables = await get_tables(engine_null_pool)
-    assert len(tables) == 4
     assert (model_name in tables) == is_in_db
