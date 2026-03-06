@@ -7,3 +7,7 @@ class MainException(Exception):
 
 class ObjectNotFoundException(MainException):
     detail = "Объект не найден"
+
+
+class ObjectAlreadyExistsException(MainException):
+    detail = "Объект уже существует"

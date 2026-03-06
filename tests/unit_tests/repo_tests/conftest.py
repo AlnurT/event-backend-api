@@ -17,6 +17,11 @@ def mock_session() -> AsyncMock:
     return session
 
 
+@pytest.fixture(scope="session")
+def mock_execute_scalars(mock_session: AsyncMock) -> MagicMock:
+    return mock_session.execute.return_value.scalars.return_value
+
+
 def mock_session_execute_return_value(
     mock_session: AsyncMock,
     data: list[FakeSchema],
