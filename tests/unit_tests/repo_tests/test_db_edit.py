@@ -1,43 +1,33 @@
 from unittest.mock import MagicMock
 
 import pytest
-from asyncpg import UniqueViolationError
 from sqlalchemy.exc import IntegrityError
-from src.exceptions import ObjectAlreadyExistsException
+from src.exceptions import ObjectNotFoundException
 from src.repositories.base import BaseRepository
 from tests.unit_tests.repo_tests.fakes import FakeSchema
 
 
 @pytest.mark.asyncio
-async def test_add_data(
+async def test_edit_data(
     mock_execute_scalars: MagicMock,
     mock_repository: BaseRepository,
     mock_data: FakeSchema,
 ):
-    result = await mock_repository.add(mock_data)
+    result = await mock_repository.edit(mock_data, id=1)
     assert result == mock_data
 
 
-@pytest.mark.parametrize(
-    ("cause", "exception"),
-    [
-        (UniqueViolationError, ObjectAlreadyExistsException),
-        (Exception, IntegrityError),
-    ],
-)
 @pytest.mark.asyncio
-async def test_add_raise_exceptions(
+async def test_edit_raise_exceptions(
     mock_execute_scalars: MagicMock,
     mock_repository: BaseRepository,
     mock_data: FakeSchema,
-    cause: Exception,
-    exception: Exception,
 ):
     mock_execute_scalars.one.side_effect = IntegrityError(
-        statement=None, params=None, orig=cause()
+        statement=None, params=None, orig=Exception
     )
 
-    with pytest.raises(exception):
-        await mock_repository.add(mock_data)
+    with pytest.raises(ObjectNotFoundException):
+        await mock_repository.edit(mock_data, id=2)
 
     mock_execute_scalars.one.side_effect = None

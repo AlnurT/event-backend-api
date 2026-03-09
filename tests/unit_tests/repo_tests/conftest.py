@@ -1,3 +1,4 @@
+import json
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -6,27 +7,30 @@ from tests.unit_tests.repo_tests.fakes import FakeDataMapper, FakeORM, FakeSchem
 
 
 @pytest.fixture(scope="session")
-def mock_session() -> AsyncMock:
+def mock_data() -> FakeSchema:
+    with open("tests/mock_fakes.json", encoding="utf-8") as file:
+        data: dict = json.load(file)
+
+    return FakeSchema(**data)
+
+
+@pytest.fixture(scope="session")
+def mock_session(mock_data: FakeSchema) -> AsyncMock:
     session = AsyncMock()
     mock_execute = MagicMock()
-    mock_scalars = MagicMock()
+    session.execute = AsyncMock(return_value=mock_execute)
 
+    mock_scalars = MagicMock()
     mock_execute.scalars.return_value = mock_scalars
-    session.execute.return_value = mock_execute
+    mock_scalars.one.return_value = mock_data
+    mock_scalars.all.return_value = [mock_data]
 
     return session
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def mock_execute_scalars(mock_session: AsyncMock) -> MagicMock:
     return mock_session.execute.return_value.scalars.return_value
-
-
-def mock_session_execute_return_value(
-    mock_session: AsyncMock,
-    data: list[FakeSchema],
-) -> None:
-    mock_session.execute.return_value.scalars.return_value.all.return_value = data
 
 
 @pytest.fixture(scope="session")
