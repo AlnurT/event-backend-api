@@ -1,4 +1,3 @@
-import json
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -8,10 +7,7 @@ from tests.unit_tests.repo_tests.fakes import FakeDataMapper, FakeORM, FakeSchem
 
 @pytest.fixture(scope="session")
 def mock_data() -> FakeSchema:
-    with open("tests/mock_fakes.json", encoding="utf-8") as file:
-        data: dict = json.load(file)
-
-    return FakeSchema(**data)
+    return FakeSchema(id=1, name="fake")
 
 
 @pytest.fixture(scope="session")
