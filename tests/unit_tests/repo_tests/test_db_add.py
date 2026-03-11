@@ -10,12 +10,20 @@ from tests.unit_tests.repo_tests.fakes import FakeSchema
 
 @pytest.mark.asyncio
 async def test_add_data(
-    mock_execute_scalars: MagicMock,
     mock_repository: BaseRepository,
     mock_data: FakeSchema,
 ):
     result = await mock_repository.add(mock_data)
     assert result == mock_data
+
+
+@pytest.mark.asyncio
+async def test_add_many_data(
+    mock_repository: BaseRepository,
+    mock_data: FakeSchema,
+):
+    result = await mock_repository.add_many([mock_data])
+    assert result == [mock_data]
 
 
 @pytest.mark.parametrize(
@@ -41,3 +49,19 @@ async def test_add_raise_exceptions(
         await mock_repository.add(mock_data)
 
     mock_execute_scalars.one.side_effect = None
+
+
+@pytest.mark.asyncio
+async def test_add_many_raise_exceptions(
+    mock_execute_scalars: MagicMock,
+    mock_repository: BaseRepository,
+    mock_data: FakeSchema,
+):
+    mock_execute_scalars.all.side_effect = IntegrityError(
+        statement=None, params=None, orig=UniqueViolationError()
+    )
+
+    with pytest.raises(ObjectAlreadyExistsException):
+        await mock_repository.add_many([mock_data])
+
+    mock_execute_scalars.all.side_effect = None

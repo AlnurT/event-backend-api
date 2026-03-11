@@ -41,6 +41,24 @@ class BaseRepository:
 
             raise ex
 
+    async def add_many(self, data_list: list[Schema]) -> list[SchemaType]:
+        add_stmt = (
+            insert(self.model)
+            .values([data.model_dump() for data in data_list])
+            .returning(self.model)
+        )
+
+        try:
+            result = await self.session.execute(add_stmt)
+            res_scalars = result.scalars().all()
+            return [self.mapper.map_to_schema(model) for model in res_scalars]
+
+        except IntegrityError as ex:
+            if isinstance(ex.orig, UniqueViolationError):
+                raise ObjectAlreadyExistsException from ex
+
+            raise ex
+
     async def edit(
         self, data: Schema, exclude_unset: bool = False, **filters_by
     ) -> SchemaType:
